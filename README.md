@@ -1,5 +1,6 @@
 # Spring-mvc1-part3-summary-
 스프링 MVC 강의 - 상품 등록 서비스 웹 페이지 만들기
+출처: https://www.inflearn.com/course/%EC%8A%A4%ED%94%84%EB%A7%81-mvc-1/dashboard
 
 강의 핵심 내용 :
 1. @RequiredArgsContructor 사용해서 의존관계 주입
