@@ -3,7 +3,7 @@ package hello.itemservice.domain.product;
 // 상품 종류 : 상수, 변하지 않음 -> enum 사용 (조회, 열거용)
 public enum ProductType {
 	
-	BOOK("도서"), FOOD("음식"), ETC("기타");
+	BOOK("도서"), FOOD("음식"), ETC("기타"); // .name() 으로 꺼내올 수 있다.
 	
 	private final String description; // 설명을 위해서
 	
