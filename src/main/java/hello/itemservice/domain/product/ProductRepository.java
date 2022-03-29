@@ -44,6 +44,10 @@ public class ProductRepository {
 		findProduct.setProductName(updateParam.getProductName());
 		findProduct.setPrice(updateParam.getPrice());
 		findProduct.setQuantity(updateParam.getQuantity());
+		findProduct.setOpen(updateParam.getOpen());
+		findProduct.setRegions(updateParam.getRegions());
+		findProduct.setProductType(updateParam.getProductType());
+		findProduct.setDeliveryCode(updateParam.getDeliveryCode());
 	}
 	
 	// test용 store 비우기 (전체 삭제)
