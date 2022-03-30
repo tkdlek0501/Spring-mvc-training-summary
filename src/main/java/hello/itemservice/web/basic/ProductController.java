@@ -11,6 +11,9 @@ import javax.annotation.PostConstruct;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -109,13 +112,13 @@ public class ProductController {
 		//return "basic/addForm";
 		return "advanced/addForm";
 	}
-	// 요구사항 추가
-	// 판매 여부(체크박스), 등록 지역(체크박스 다중), 상품 종류(라디오버튼), 배송방식(selectbox)
+
 	
 	// 상품 등록 (폼과 같은 url 이지만 다른 method)
 	@PostMapping("/add")
 	public String save(
 			@ModelAttribute("item") Product item, // 객체를 만들어주고 set까지 해줌, 어노테이션 생략 가능
+			BindingResult bindingResult, // item에 binding 된 결과가 담김 (검증 오류 처리), 바인딩 오류를 얘가 처리하게 됨: 타입 오류가 있어도 404로 안가고 컨트롤러를 타게됨
 			Model model,
 			RedirectAttributes redirectAttributes
 			) {
@@ -125,34 +128,30 @@ public class ProductController {
 		
 		// 검증 로직
 		if(!StringUtils.hasText(item.getProductName())) {
-			errors.put("itemName", "상품 이름은 필수로 입력해주셔야 합니다.");
+			bindingResult.addError(new FieldError("item", "productName", "상품 이름은 필수 입니다."));
 		}
 		if(item.getPrice() == null || item.getPrice() < 1000 || item.getPrice() > 1000000) {
-			errors.put("price", "가격은 1,000 ~ 1,000,000 까지 허용합니다.");
+			bindingResult.addError(new FieldError("item", "price", "가격은 1,000 ~ 1,000,000 까지 허용합니다."));
 		}
 		if(item.getQuantity() == null || item.getQuantity() > 9999) {
-			errors.put("quantity", "수량은 최대 9,999 까지 허용합니다.");
+			bindingResult.addError(new FieldError("item", "quantity", "수량은 최대 9,999 까지 허용합니다."));
 		}	
 		// 특정 필드가 아닌 복합 검증
 		if(item.getPrice() != null && item.getQuantity() != null) {
 			int resultPrice = item.getPrice() * item.getQuantity();
 			if(resultPrice < 10000) {
-				errors.put("globalError", "가격 x 수량의 합은 10,000 원 이상이어야 합니다. 현재 값 = " + resultPrice);
+				bindingResult.addError(new ObjectError("item", "가격 x 수량의 합은 10,000 원 이상이어야 합니다. 현재 값 = " + resultPrice));
 			}
 		}
 		
 		// 검증에 실패하면 다시 입력 폼으로
-		if (!errors.isEmpty()) {
-			log.info("errors = {} ", errors);
-			model.addAttribute("errors", errors);
-			// return "basic/addForm";
+		if(bindingResult.hasErrors()) {
+			log.info("errors = {}", bindingResult);
 			return "advanced/addForm";
 		}
 		
 		// 성공시
 		log.info("product.open={}",item.getOpen());
-		// HTML 에서 체크 박스를 선택하지 않고 form 전송하면 open 이라는 필드 자체가 서버로 전송되지 않음; null이 되어 문제...
-		// -> hidden input을 넣어 해결 => th:filed로 간단히 해결
 		log.info("product.regions={}", item.getRegions());
 		log.info("product.productType={}", item.getProductType());
 		Product savedProduct = productRepository.save(item);
@@ -160,11 +159,72 @@ public class ProductController {
 		redirectAttributes.addAttribute("status", true);
 		
 		model.addAttribute("item", item);
-		//return "redirect:/basic/items/" + item.getId(); // PRG 
-		//return "redirect:/basic/items/{itemId}"; // redirectAttributes에 넣은 itemId 값을 사용 가능
 		return "redirect:/advanced/items/{itemId}";
-		// 나머지 설정한 값들은 쿼리 파라미터 형식으로 들어간다. ?status=true
 	}
+	
+	// BindingResult 설명
+//	@PostMapping("/add")
+//	public String save(
+//			@ModelAttribute("item") Product item, // 객체를 만들어주고 set까지 해줌, 어노테이션 생략 가능
+//			BindingResult bindingResult, // item에 binding 된 결과가 담김 (검증 오류 처리), 바인딩 오류를 얘가 처리하게 됨: 타입 오류가 있어도 404로 안가고 컨트롤러를 타게됨
+//			Model model,
+//			RedirectAttributes redirectAttributes
+//			) {
+//		
+//		// 검증 오류 결과
+//		Map<String, String> errors = new HashMap<>();
+//		
+//		// 검증 로직
+//		if(!StringUtils.hasText(item.getProductName())) {
+//			//errors.put("itemName", "상품 이름은 필수로 입력해주셔야 합니다."); - basic html에 쓰임
+//			bindingResult.addError(new FieldError("item", "productName", "상품 이름은 필수 입니다."));
+//			// object 이름은 @ModelAttribute를 따라가고 field 이름은 그 객체의 필드 이름과 맞춰줘야 한다.
+//		}
+//		if(item.getPrice() == null || item.getPrice() < 1000 || item.getPrice() > 1000000) {
+//			//errors.put("price", "가격은 1,000 ~ 1,000,000 까지 허용합니다.");
+//			bindingResult.addError(new FieldError("item", "price", "가격은 1,000 ~ 1,000,000 까지 허용합니다."));
+//		}
+//		if(item.getQuantity() == null || item.getQuantity() > 9999) {
+//			//errors.put("quantity", "수량은 최대 9,999 까지 허용합니다.");
+//			bindingResult.addError(new FieldError("item", "quantity", "수량은 최대 9,999 까지 허용합니다."));
+//		}	
+//		// 특정 필드가 아닌 복합 검증
+//		if(item.getPrice() != null && item.getQuantity() != null) {
+//			int resultPrice = item.getPrice() * item.getQuantity();
+//			if(resultPrice < 10000) {
+//				//errors.put("globalError", "가격 x 수량의 합은 10,000 원 이상이어야 합니다. 현재 값 = " + resultPrice);
+//				bindingResult.addError(new ObjectError("item", "가격 x 수량의 합은 10,000 원 이상이어야 합니다. 현재 값 = " + resultPrice));
+//			}
+//		}
+//		
+//		// 검증에 실패하면 다시 입력 폼으로
+//		//if (!errors.isEmpty()) {
+//		if(bindingResult.hasErrors()) {
+//			//log.info("errors = {} ", errors);
+//			//model.addAttribute("errors", errors);
+//			// return "basic/addForm";
+//			log.info("errors = {}", bindingResult);
+//			return "advanced/addForm";
+//		}
+//		
+//		// 성공시
+//		log.info("product.open={}",item.getOpen());
+//		// HTML 에서 체크 박스를 선택하지 않고 form 전송하면 open 이라는 필드 자체가 서버로 전송되지 않음; null이 되어 문제...
+//		// -> hidden input을 넣어 해결 => th:filed로 간단히 해결
+//		log.info("product.regions={}", item.getRegions());
+//		log.info("product.productType={}", item.getProductType());
+//		Product savedProduct = productRepository.save(item);
+//		redirectAttributes.addAttribute("itemId", savedProduct.getId());
+//		redirectAttributes.addAttribute("status", true);
+//		
+//		model.addAttribute("item", item);
+//		//return "redirect:/basic/items/" + item.getId(); // PRG 
+//		//return "redirect:/basic/items/{itemId}"; // redirectAttributes에 넣은 itemId 값을 사용 가능
+//		return "redirect:/advanced/items/{itemId}";
+//		// 나머지 설정한 값들은 쿼리 파라미터 형식으로 들어간다. ?status=true
+//	}
+	
+	
 //		@PostMapping("/add")
 //		public String save(
 //				@RequestParam("itemName") String itemName,
