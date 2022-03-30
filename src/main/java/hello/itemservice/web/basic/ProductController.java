@@ -1,7 +1,6 @@
 package hello.itemservice.web.basic;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,11 +9,11 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +24,7 @@ import hello.itemservice.domain.product.DeliveryCode;
 import hello.itemservice.domain.product.Product;
 import hello.itemservice.domain.product.ProductRepository;
 import hello.itemservice.domain.product.ProductType;
+import hello.itemservice.web.validation.ItemValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,7 +45,14 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/advanced/items")
 public class ProductController {
 	
-	private final ProductRepository productRepository; 
+	private final ProductRepository productRepository;
+	private final ItemValidator itemValidator;
+	
+	// 본 컨트롤러 안 어떤 메서드에서도 쓸 수 있는 binder 설정
+	@InitBinder
+	public void init(WebDataBinder dataBinder) {
+		dataBinder.addValidators(itemValidator); // validator 가져옴
+	}
 	
 	// 본 컨트롤러에서 이 regions는 model에 무조건 담겨있게 된다.
 	@ModelAttribute("regions")
@@ -117,32 +124,16 @@ public class ProductController {
 	// 상품 등록 (폼과 같은 url 이지만 다른 method)
 	@PostMapping("/add")
 	public String save(
-			@ModelAttribute("item") Product item, // 객체를 만들어주고 set까지 해줌, 어노테이션 생략 가능
+			@Validated @ModelAttribute("item") Product item, // 객체를 만들어주고 set까지 해줌, 어노테이션 생략 가능
 			BindingResult bindingResult, // item에 binding 된 결과가 담김 (검증 오류 처리), 바인딩 오류를 얘가 처리하게 됨: 타입 오류가 있어도 404로 안가고 컨트롤러를 타게됨
 			Model model,
 			RedirectAttributes redirectAttributes
 			) {
 		
-		// 검증 오류 결과
-		Map<String, String> errors = new HashMap<>();
-		
 		// 검증 로직
-		if(!StringUtils.hasText(item.getProductName())) {
-			bindingResult.addError(new FieldError("item", "productName", "상품 이름은 필수 입니다."));
-		}
-		if(item.getPrice() == null || item.getPrice() < 1000 || item.getPrice() > 1000000) {
-			bindingResult.addError(new FieldError("item", "price", "가격은 1,000 ~ 1,000,000 까지 허용합니다."));
-		}
-		if(item.getQuantity() == null || item.getQuantity() > 9999) {
-			bindingResult.addError(new FieldError("item", "quantity", "수량은 최대 9,999 까지 허용합니다."));
-		}	
-		// 특정 필드가 아닌 복합 검증
-		if(item.getPrice() != null && item.getQuantity() != null) {
-			int resultPrice = item.getPrice() * item.getQuantity();
-			if(resultPrice < 10000) {
-				bindingResult.addError(new ObjectError("item", "가격 x 수량의 합은 10,000 원 이상이어야 합니다. 현재 값 = " + resultPrice));
-			}
-		}
+		// ItemValidator 클래스(Validator 상속)에 작업
+		// itemValidator.validate(item, bindingResult); (object, bindingResult) // -> 본 컨트롤러 상단에 binder로 처리 + @Validated를 검증할 객체 앞에 붙여주기
+		// @Validated를 사용함으로써 supports 되는지까지 수행된다 (모든 validator를 확인)
 		
 		// 검증에 실패하면 다시 입력 폼으로
 		if(bindingResult.hasErrors()) {
@@ -154,13 +145,17 @@ public class ProductController {
 		log.info("product.open={}",item.getOpen());
 		log.info("product.regions={}", item.getRegions());
 		log.info("product.productType={}", item.getProductType());
+		// store에 저장
 		Product savedProduct = productRepository.save(item);
+		// redirect 설정
 		redirectAttributes.addAttribute("itemId", savedProduct.getId());
 		redirectAttributes.addAttribute("status", true);
 		
 		model.addAttribute("item", item);
 		return "redirect:/advanced/items/{itemId}";
 	}
+
+// @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@	
 	
 	// BindingResult 설명
 //	@PostMapping("/add")
