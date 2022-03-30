@@ -5,7 +5,11 @@
  <link th:href="@{/css/bootstrap.min.css}" href="../css/bootstrap.min.css" rel="stylesheet">
  <style>
  .container {
- max-width: 560px;
+	 max-width: 560px;
+ }
+ .field-error{
+ 	border-color: #dc3545;
+ 	color: #dc3545;
  }
  </style>
 </head>
@@ -13,22 +17,35 @@
 <div class="container">
  <div class="py-5 text-center">
  	<h2 th:text="#{page.addItem}">상품 등록 폼</h2>
+ 	<!-- Map에 해당 키가 존재하는지 -->
+ 	<div th:if="${errors?.containsKey('globalError')}">
+ 		<p class="field-error" th:text="${errors['globalError']}"></p>
+ 	</div>
  </div>
  <h4 class="mb-3">상품 입력</h4>
  <form th:action method="post" th:object="${item}">
  <!-- <form th:action="/basic/items/add" method="post">-->
  <div>
  <label for="itemName" th:text="#{label.item.itemName}">상품명</label>
- <input type="text" th:field="${item.productName}" class="form-control" placeholder="이름을 입력하세요">
+ <input th:class="${errors?.containsKey('itemName')} ? 'form-control field-error' : 'form-control'" type="text" th:field="${item.productName}" class="form-control" placeholder="이름을 입력하세요">
+ <div th:if="${errors?.containsKey('itemName')}"> 
+ 		<span class="field-error" th:text="${errors['itemName']}"></span>
+ </div>
  </div>
  <div>
  <label for="price" th:text="#{label.item.price}">가격</label>
  <input type="text" th:field="*{price}" class="form-control"
 placeholder="가격을 입력하세요">
+<div th:if="${errors?.containsKey('price')}"> 
+ 		<span class="field-error" th:text="${errors['price']}"></span>
+ </div>
  </div>
  <div>
  <label for="quantity">수량</label>
  <input type="text" th:field="*{quantity}" class="form-control" placeholder="수량을 입력하세요">
+ <div th:if="${errors?.containsKey('quantity')}"> 
+ 		<span class="field-error" th:text="${errors['quantity']}"></span>
+ </div>
  </div>
  
  <!-- SELECT -->
