@@ -1,4 +1,4 @@
-package hello.itemservice.web.basic;
+package hello.itemservice.web.validation;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -28,30 +28,14 @@ import hello.itemservice.web.validation.ItemValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-//MVC1 강의 핵심 : 
-// @RequiredArgsConstructor 사용해서 의존관계 주입
-// * @RequestMapping 을 클래스 레벨에서 사용해서 공통 uri 처리
-// * 타임리프에서 url 표현식은 @ 사용해야 함 이때 변수 랜더링 필요 + 리터럴 대체 : || 
-// * @PathVariable과 @ModelAttribute 사용
-// * 상품 수정 등에서 완료 후 redirect는 'return "redirect:/basic/items/{itemId}";' 으로
-// * HTTP API 설계 방법 : 요즘에는 파라미터를 넘기기보다 식별자 사용이 트랜드
-// * PRG 방법; 등록 폼에서 새로고침 누르면 똑같은 행위 반복에 대해서 방지 하기 위해 + RedirectAttributes 사용 
-// -> 근데 실무에서는 response 이용해서 js 코드 만들어서 alert 창 띄우는 형식으로 했음
-
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-//@RequestMapping("/basic/items")
-@RequestMapping("/advanced/items")
-public class ProductController {
+@RequestMapping("/validation/items")
+public class ProductControllerValid {
 	
 	private final ProductRepository productRepository;
 	private final ItemValidator itemValidator;
-	
-	//	@Autowired
-	//	public BasicItemController(ItemRepository itemRepository) {
-	//		this.itemRepository = itemRepository;
-	//	}
 	
 	// 본 컨트롤러 안 어떤 메서드에서도 쓸 수 있는 binder 설정
 	@InitBinder
@@ -86,13 +70,18 @@ public class ProductController {
 		return deliveryCodes;
 	}
 	
+	//	@Autowired
+	//	public BasicItemController(ItemRepository itemRepository) {
+	//		this.itemRepository = itemRepository;
+	//	}
+	
 	// 상품 리스트
 	@GetMapping("")
 	public String items(Model model) {
 		List<Product> items = productRepository.findAll();
 		model.addAttribute("items", items);
 		//return "basic/items";
-		return "advanced/items";
+		return "validation/items";
 	}
 	
 	// 상품 상세
@@ -101,7 +90,7 @@ public class ProductController {
 		Product item = productRepository.findById(itemId);
 		model.addAttribute("item", item);
 		//return "basic/item";
-		return "advanced/item";
+		return "validation/item";
 	}
 	
 	// 상품 등록 폼
@@ -117,7 +106,7 @@ public class ProductController {
 // 위 코드가 등록뿐만 아니라 수정, 상세에서도 나와야한다. -> 스프링에서는 @ModelAttribute의 기능으로 해결할 수 있다. 클래스 상단에 적용.
 		
 		//return "basic/addForm";
-		return "advanced/addForm";
+		return "validation/addForm";
 	}
 
 	
@@ -138,7 +127,7 @@ public class ProductController {
 		// 검증에 실패하면 다시 입력 폼으로
 		if(bindingResult.hasErrors()) {
 			log.info("errors = {}", bindingResult);
-			return "advanced/addForm";
+			return "validation/addForm";
 		}
 		
 		// 성공시
@@ -152,7 +141,7 @@ public class ProductController {
 		redirectAttributes.addAttribute("status", true);
 		
 		model.addAttribute("item", item);
-		return "redirect:/advanced/items/{itemId}";
+		return "redirect:/validation/items/{itemId}";
 	}
 
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@	
@@ -199,7 +188,7 @@ public class ProductController {
 //			//model.addAttribute("errors", errors);
 //			// return "basic/addForm";
 //			log.info("errors = {}", bindingResult);
-//			return "advanced/addForm";
+//			return "validation/addForm";
 //		}
 //		
 //		// 성공시
@@ -215,7 +204,7 @@ public class ProductController {
 //		model.addAttribute("item", item);
 //		//return "redirect:/basic/items/" + item.getId(); // PRG 
 //		//return "redirect:/basic/items/{itemId}"; // redirectAttributes에 넣은 itemId 값을 사용 가능
-//		return "redirect:/advanced/items/{itemId}";
+//		return "redirect:/validation/items/{itemId}";
 //		// 나머지 설정한 값들은 쿼리 파라미터 형식으로 들어간다. ?status=true
 //	}
 	
@@ -254,7 +243,7 @@ public class ProductController {
 		Product item = productRepository.findById(itemId);
 		model.addAttribute("item", item);
 		//return "basic/editForm";
-		return "advanced/editForm";
+		return "validation/editForm";
 	}
 	
 	// 상품 수정
@@ -262,7 +251,7 @@ public class ProductController {
 	public String edit(@PathVariable Long itemId, @ModelAttribute Product item) {
 		productRepository.update(itemId, item);
 		//return "redirect:/basic/items/{itemId}"; // redirect 설정은 이렇게 할 수 있음
-		return "redirect:/advanced/items/{itemId}";
+		return "redirect:/validation/items/{itemId}";
 	}
 	
 	// test 용 데이터 추가 (store 에 아무것도 없으니까 몇개 생성 해주기)
