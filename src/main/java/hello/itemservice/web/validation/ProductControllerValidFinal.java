@@ -32,8 +32,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/validation/items")
-public class ProductControllerValid {
+@RequestMapping("/validation-final/items")
+public class ProductControllerValidFinal {
 	
 	private final ProductRepository productRepository;
 	private final ItemValidator itemValidator;
@@ -79,7 +79,7 @@ public class ProductControllerValid {
 		List<Product> items = productRepository.findAll();
 		model.addAttribute("items", items);
 		//return "basic/items";
-		return "validation/items";
+		return "validation2/items";
 	}
 	
 	// 상품 상세
@@ -88,14 +88,14 @@ public class ProductControllerValid {
 		Product item = productRepository.findById(itemId);
 		model.addAttribute("item", item);
 		//return "basic/item";
-		return "validation/item";
+		return "validation2/item";
 	}
 	
 	// 상품 등록 폼
 	@GetMapping("/add")
 	public String addForm(Model model) {
 		model.addAttribute("item", new Product()); // 빈 객체 1개를 넣어주면 th:object / th:field 사용 가능
-		return "validation/addForm";
+		return "validation2/addForm";
 	}
 
 	
@@ -123,7 +123,7 @@ public class ProductControllerValid {
 		// 검증에 실패하면 다시 입력 폼으로
 		if(bindingResult.hasErrors()) {
 			log.info("errors = {}", bindingResult);
-			return "validation/addForm";
+			return "validation2/addForm";
 		}
 		
 		// 성공시
@@ -137,7 +137,7 @@ public class ProductControllerValid {
 		redirectAttributes.addAttribute("status", true);
 		
 		model.addAttribute("item", item);
-		return "redirect:/validation/items/{itemId}";
+		return "redirect:/validation-final/items/{itemId}";
 	}
 
 	// 상품 수정 폼
@@ -146,7 +146,7 @@ public class ProductControllerValid {
 		Product item = productRepository.findById(itemId);
 		model.addAttribute("item", item);
 		//return "basic/editForm";
-		return "validation/editForm";
+		return "validation2/editForm";
 	}
 	
 	// 상품 수정
@@ -166,12 +166,12 @@ public class ProductControllerValid {
 		
 		if(bindingResult.hasErrors()) {
 			log.info("errors={}", bindingResult);
-			return "validation/editForm";
+			return "validation2/editForm";
 		}
 		
 		
 		productRepository.update(itemId, item);
-		return "redirect:/validation/items/{itemId}";
+		return "redirect:/validation-final/items/{itemId}";
 	}
 	
 	// test 용 데이터 추가 (store 에 아무것도 없으니까 몇개 생성 해주기)

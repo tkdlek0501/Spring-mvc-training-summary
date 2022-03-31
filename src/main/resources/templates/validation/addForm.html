@@ -17,9 +17,7 @@
 <div class="container">
  <div class="py-5 text-center">
  	<h2 th:text="#{page.addItem}">상품 등록 폼</h2>
- 	
  </div>
- <h4 class="mb-3">상품 입력</h4>
  <form th:action method="post" th:object="${item}">
  <div th:if="${#fields.hasGlobalErrors()}">
  		<p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">글로벌 오류 메시지</p>

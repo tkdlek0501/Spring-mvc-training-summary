@@ -81,14 +81,14 @@
  <div class="row">
  <div class="col">
  <button class="w-100 btn btn-primary btn-lg"
-th:onclick="|location.href='@{/validation/items/{itemId}/edit(itemId=${item.id})}'|" type="button">상품 수정</button>
+th:onclick="|location.href='@{/validation-final/items/{itemId}/edit(itemId=${item.id})}'|" type="button">상품 수정</button>
 <!-- url 표현식은 @가 붙어야 한다. -->
 <button class="w-100 btn btn-primary btn-lg"
-th:onclick="|location.href='@{/validation/items/${item.id}/edit}'|" type="button">상품 수정2</button>
+th:onclick="|location.href='@{/validation-final/items/${item.id}/edit}'|" type="button">상품 수정2</button>
  </div>
  <div class="col">
  <button class="w-100 btn btn-secondary btn-lg"
-th:onclick="|location.href='@{/validation/items}'|" type="button">목록으로</button>
+th:onclick="|location.href='@{/validation-final/items}'|" type="button">목록으로</button>
  </div>
  </div>
 </div> <!-- /container -->
