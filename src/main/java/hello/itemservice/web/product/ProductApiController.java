@@ -1,4 +1,4 @@
-package hello.itemservice.web.validation;
+package hello.itemservice.web.product;
 
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import hello.itemservice.web.validation.form.ProductSaveForm;
+import hello.itemservice.web.product.form.ProductSaveForm;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

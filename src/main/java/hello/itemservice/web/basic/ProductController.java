@@ -24,7 +24,7 @@ import hello.itemservice.domain.product.DeliveryCode;
 import hello.itemservice.domain.product.Product;
 import hello.itemservice.domain.product.ProductRepository;
 import hello.itemservice.domain.product.ProductType;
-import hello.itemservice.web.validation.ItemValidator;
+import hello.itemservice.web.product.ItemValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
