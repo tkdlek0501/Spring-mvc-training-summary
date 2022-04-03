@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 
 // 로그인이 필요한 페이지는 로그인 정보가 없으면 이동(요청)을 막아야 된다.
 // 스프링 시큐리티를 이용해도 이러한 과정(필터)들이 있기 때문에 스프링 시큐리티 다시 공부하면서 이 부분을 참고하면 좋을 것 같음
+// filter 보다는 스프링에서 제공하는 interceptor를 사용한다.
 
 @Slf4j
 public class LoginCheckFilter implements Filter{

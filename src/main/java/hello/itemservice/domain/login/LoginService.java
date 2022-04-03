@@ -31,7 +31,7 @@ public class LoginService {
 		// TODO: optional 꼭 연습하기!
 		// 위 코드와 동일
 		Optional<Member> findMember =  memberRepository.findByLoginId(loginId);
-		log.info("findMember : {}", findMember); // empty가 왜 되지?
+		log.info("findMember : {}", findMember); 
 		return	findMember.filter(m -> m.getPassword().equals(password))
 				.orElse(null);
 	}
