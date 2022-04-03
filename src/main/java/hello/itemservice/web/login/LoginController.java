@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import hello.itemservice.domain.login.LoginService;
 import hello.itemservice.domain.member.Member;
@@ -35,7 +36,13 @@ public class LoginController {
 	
 	// 로그인
 	@PostMapping("/login")
-	public String login(@Valid @ModelAttribute("loginForm") LoginForm form, BindingResult bindingResult, HttpServletResponse response, HttpServletRequest request) {
+	public String login(
+			@Valid @ModelAttribute("loginForm") LoginForm form, 
+			BindingResult bindingResult, 
+			HttpServletResponse response, 
+			HttpServletRequest request,
+			@RequestParam(defaultValue = "/") String redirectURL // 로그인 후 redirect 할 URL
+			) {
 		if(bindingResult.hasErrors()) {
 			return "login/loginForm";
 		}
@@ -58,7 +65,7 @@ public class LoginController {
 		// 직접 만든 SessionManager 이용해서 세션 생성, 쿠키 발급, 회원 data 보관
 		//sessionManager.createSession(loginMember, response);
 		
-		return "redirect:/";
+		return "redirect:" + redirectURL;
 	}
 	
 	//	@PostMapping("/login")
