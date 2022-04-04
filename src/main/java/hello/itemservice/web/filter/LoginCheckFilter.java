@@ -36,6 +36,7 @@ public class LoginCheckFilter implements Filter{
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
 		
 		try {
+			log.info("REQUEST [{}]", request.getDispatcherType()); // 예외 확인을 위해
 			log.info("인층 체크 필터 시작{}", requestURI);
 			
 			if(isLoginCheckPath(requestURI)) { // 로그인이 필요한 URI 인지

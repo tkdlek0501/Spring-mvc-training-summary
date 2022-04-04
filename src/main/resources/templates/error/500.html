@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+ <meta charset="utf-8">
+</head>
+<body>
+<div class="container" style="max-width: 600px">
+ <div class="py-5 text-center">
+ <h2>500 오류 화면 스프링 부트 제공</h2>
+ </div>
+ <div>
+ <p>오류 화면 입니다.</p>
+ <ul>
+ <li>오류 정보</li>
+ <ul>
+ <li th:text="|timestamp: ${timestamp}|"></li>
+ <li th:text="|path: ${path}|"></li>
+ <li th:text="|status: ${status}|"></li>
+ <li th:text="|message: ${message}|"></li>
+ <li th:text="|error: ${error}|"></li>
+ <li th:text="|exception: ${exception}|"></li>
+ <li th:text="|errors: ${errors}|"></li>
+ <li th:text="|trace: ${trace}|"></li>
+ </ul>
+ </li>
+ <p>null 로 나오는 이유 : 오류 관련 내부 정보를 고객에게 노출시키는 것은 보안상 위험할 수 있습니다.</p>
+ <span>properties 설정으로 노출 여부 설정 가능</span>
+ </ul>
+ </div>
+ <hr class="my-4">
+</div> <!-- /container -->
+</body>
+</html>
