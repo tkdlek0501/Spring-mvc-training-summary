@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 
 // 여기서 이렇게 errorpage를 등록하는 게 번거롭다 -> 스프링부트에서 지원해준다 (templates/error 경로에 html 파일 두면 자동으로 인식)
 
-// @Component -> 스프링에서 지원하는 오류페이지 사용을 위해 주석 처리
+//@Component -> 스프링에서 지원하는 오류페이지 사용을 위해서는 주석 처리
 public class WebServerCustomizer implements WebServerFactoryCustomizer<ConfigurableWebServerFactory> {
 
 	@Override

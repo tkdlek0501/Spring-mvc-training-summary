@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.web.method.HandlerMethod;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import hello.itemservice.web.SessionConst;
@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class LoginCheckInterceptor implements HandlerInterceptor{
-	
 	
 	// handler 호출 전
 	@Override

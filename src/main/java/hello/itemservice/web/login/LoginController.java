@@ -85,7 +85,7 @@ public class LoginController {
 //		// 로그인 성공 처리
 //		log.info("로그인 한 회원 : {}", loginMember);
 //		
-//		//TODO: 쿠키 사용
+//		//TODO: 쿠키 발급
 //		// 쿠키에 시간 설정 안하면 브라우저 종료시까지 유지
 //		Cookie idCookie = new Cookie("memberId", String.valueOf(loginMember.getId())); // Long to String
 //		response.addCookie(idCookie);

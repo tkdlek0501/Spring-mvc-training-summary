@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -26,9 +27,29 @@ public class WebConfig implements WebMvcConfigurer{
 		registry.addInterceptor(new LoginCheckInterceptor())
 			.order(1)
 			.addPathPatterns("/**") // 모든 URL 요청에 대해서 interceptor
-			.excludePathPatterns("/", "/members/add", "/login", "/logout", "/css/**", "/*.ico", "/error", "error-page/**"); // 제외할 path 설정
+			.excludePathPatterns("/", "/members/add", "/login", "/logout", "/css/**", "/*.ico", "/error", "/error-page/**", "/api-ex/**"); // 제외할 path 설정
 			// dispatcherType 설정을 여기서 가능 (error-page/** 는 인터셉터를 타지 않게)
 	}
+	
+	// MyHandlerExceptionResolver 등록
+	@Override
+	public void extendHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
+//		resolvers.add(new MyHandlerExceptionResolver());
+//		resolvers.add(new UserHandlerExceptionResolver());
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	// filter는 servlet 전에 호출
 //	@Bean
