@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import hello.itemservice.exception.ErrorResult;
 import lombok.extern.slf4j.Slf4j;
 
+// TODO: @ExceptionHandler 사용 방법
 // 이 컨트롤러에서 모든 컨트롤러의 API 예외 처리를 해줌
 
 @Slf4j

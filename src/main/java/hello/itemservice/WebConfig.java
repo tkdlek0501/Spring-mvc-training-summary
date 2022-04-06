@@ -1,26 +1,26 @@
 package hello.itemservice;
 
 
-import java.util.List;
-
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import hello.itemservice.web.argumentResolver.LoginMemberArgumentResolver;
+import hello.itemservice.converter.converter.IpPortToStringConverter;
+import hello.itemservice.converter.converter.StringToIpPortConverter;
+import hello.itemservice.converter.formatter.CommaNumberFormatter;
 import hello.itemservice.web.interceptor.LoginCheckInterceptor;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer{
 	
 	// 직접 만든 resolver 등록 -> 어노테이션
-	@Override
-	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-		resolvers.add(new LoginMemberArgumentResolver());
-	}
+//	@Override
+//	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+//		resolvers.add(new LoginMemberArgumentResolver());
+//	}
 	
+	// TODO: interceptor 등록
 	// interceptor는 핸들러 전에 실행
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
@@ -31,12 +31,23 @@ public class WebConfig implements WebMvcConfigurer{
 			// dispatcherType 설정을 여기서 가능 (error-page/** 는 인터셉터를 타지 않게)
 	}
 	
-	// MyHandlerExceptionResolver 등록
+	// TODO: converter, fomatter 등록
 	@Override
-	public void extendHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
+	public void addFormatters(FormatterRegistry registry) {
+		// 컨버터 등록
+		registry.addConverter(new StringToIpPortConverter());
+		registry.addConverter(new IpPortToStringConverter());
+		
+		// 포멧터 등록
+		registry.addFormatter(new CommaNumberFormatter());
+	}
+	
+	// MyHandlerExceptionResolver 등록
+//	@Override
+//	public void extendHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
 //		resolvers.add(new MyHandlerExceptionResolver());
 //		resolvers.add(new UserHandlerExceptionResolver());
-	}
+//	}
 	
 	
 	
