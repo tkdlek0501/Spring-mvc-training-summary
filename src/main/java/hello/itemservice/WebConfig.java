@@ -43,12 +43,6 @@ public class WebConfig implements WebMvcConfigurer{
 		//registry.addFormatter(new CommaNumberFormatter());
 	}
 	
-	// MyHandlerExceptionResolver 등록
-//	@Override
-//	public void extendHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
-//		resolvers.add(new MyHandlerExceptionResolver());
-//		resolvers.add(new UserHandlerExceptionResolver());
-//	}
 	
 	
 	

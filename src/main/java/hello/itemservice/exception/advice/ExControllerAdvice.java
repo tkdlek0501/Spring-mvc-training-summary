@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import hello.itemservice.exception.ErrorResult;
 import lombok.extern.slf4j.Slf4j;
 
-// TODO: @ExceptionHandler 사용 방법
+// TODO: API 예외 처리 : @ExceptionHandler, @RestControllerAdvice 사용 방법
 // 이 컨트롤러에서 모든 컨트롤러의 API 예외 처리를 해줌
 
 @Slf4j
@@ -22,14 +22,18 @@ import lombok.extern.slf4j.Slf4j;
 public class ExControllerAdvice {
 	
 		// @ExceptionHandler를 사용해서 이 컨트롤러 내의 IllegalArgumentException를 잡아서 처리해준다.(WAS로 예외가 넘어가지 않는다.)
-		// + 이 컨트롤러는 @RestController 를 가지고 있어서 model, view가 아니라 그대로 반환해준다.
+		// + 이 컨트롤러는 @RestController 를 가지고 있어서 model, view가 아니라 그대로 body에 담아 반환해준다.
 		@ResponseStatus(HttpStatus.BAD_REQUEST) // MVC1 내용에 있었음
 		@ExceptionHandler(IllegalArgumentException.class)
 		public ErrorResult illegalExHandler(IllegalArgumentException e) {
 			log.error("[exceptionHandler] ex", e);
 			return new ErrorResult("BAD", e.getMessage());
 		}
+		// IllegalArgumentException 예외에 대해서 400 에러로 반환한다.
+		// ApiExceptionController 에서 포스트맨 가지고 테스트 해보자!
 		
+		
+		// 위와 다른 방법
 		@ExceptionHandler
 		public ResponseEntity<ErrorResult> exHandler(Exception e){ // 나머지 예외 처리
 			log.error("[exceptionHandler] ex", e);
