@@ -25,6 +25,10 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	
+	// AWS
+	implementation 'com.amazonaws:aws-java-sdk-core' 
+    implementation 'com.amazonaws:aws-java-sdk:1.11.313'
 }
 
 tasks.named('test') {
