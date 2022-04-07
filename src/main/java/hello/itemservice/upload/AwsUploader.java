@@ -7,11 +7,17 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
+import java.net.URLEncoder;
 
 import javax.imageio.ImageIO;
 
-import org.springframework.stereotype.Component;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
+
+import org.springframework.stereotype.Component;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
@@ -21,6 +27,12 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
+import com.amazonaws.util.IOUtils;
+
+
 
 @Component
 public class AwsUploader {
@@ -61,7 +73,7 @@ private final AmazonS3 amzonS3;
     }
    
     
-    // 원래 ImageUploader 클래스에 있던 부분이지만 본 클래스에 통합 
+    // 업로드
  	public boolean uploadImageToWithNameAwsS3(String path, MultipartFile file, String fileName) {
  	
  		System.out.println(file.getOriginalFilename());
@@ -92,6 +104,46 @@ private final AmazonS3 amzonS3;
          }
  	}
  	
+ 	// 다운로드
+ 	public ResponseEntity<byte[]> fileDownloader(String file_path) throws IOException {
+		   String[] filePathArr = file_path.split("/");
+		   
+		   String bucketName = "..." + filePathArr[0]; 
+		   String objectName = filePathArr[1];
+		  
+		   
+		   // download object
+		   try {
+		       S3Object s3Object = amzonS3.getObject(bucketName, objectName);
+		       S3ObjectInputStream s3ObjectInputStream = s3Object.getObjectContent();
+		       
+		       byte[] bytes = IOUtils.toByteArray(s3ObjectInputStream);
+		       //OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(downloadFilePath));
+		      
+		       String realFileName = URLEncoder.encode(objectName, "UTF-8").replaceAll("\\+", "%20");
+		        HttpHeaders httpHeaders = new HttpHeaders();
+		        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		        httpHeaders.setContentLength(bytes.length);
+		        httpHeaders.setContentDispositionFormData("attachment", realFileName);
+		        
+		       return new ResponseEntity<>(bytes, httpHeaders, HttpStatus.OK);
+		   } catch(AmazonS3Exception e) {
+			   e.printStackTrace();
+		       return null;
+		   }
+ 	}
+ 	// 다운로드 서비스에서 사용법
+// 	@GetMapping("download-file")
+//	public ResponseEntity<byte[]> downloadFile(
+//			@RequestParam("filePath") String filePath,
+//			) throws Exception{
+//		
+//		return awsUploader.fileDownloader(filePath);
+//		
+//	}
+ 	
+ 	
+ 	// 삭제
  	public boolean deleteFileInAwsByKey(String path , String fileName) {
  		
  		try
