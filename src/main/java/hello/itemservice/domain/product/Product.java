@@ -27,7 +27,7 @@ public class Product {
 	// object 단위 : @ScriptAssert() 를 사용하면 되긴 하는데 제약 조건이 많다. -> 어노테이션이 아닌 자바 코드로 작성하는게 유연하다.
 	// 결론 : field 에러는 어노테이션으로 object 에러는 직접 자바 코드로 작성하기
 	
-//	@NotBlank(message = "빈 값일 수 없습니다.", groups = {SaveCheck.class, UpdateCheck.class}) // 빈값 or 공백 미허용
+	@NotBlank(message = "빈 값일 수 없습니다.", groups = {SaveCheck.class, UpdateCheck.class}) // 빈값 or 공백 미허용
 	private String productName;
 	
 	// int 는 null 이 들어가지 못한다. Integer는 null 대입 가능 -> 가격이나 수량이 null 이 될 수 있냐 없냐로 판단

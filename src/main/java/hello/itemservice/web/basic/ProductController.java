@@ -135,6 +135,8 @@ public class ProductController {
 		// itemValidator.validate(item, bindingResult); (object, bindingResult) // -> 본 컨트롤러 상단에 binder로 처리 + @Validated를 검증할 객체 앞에 붙여주기
 		// @Validated를 사용함으로써 supports 되는지까지 수행된다 (모든 validator를 확인)
 		
+		log.info("상품 등록 중입니다.");
+		
 		// 검증에 실패하면 다시 입력 폼으로
 		if(bindingResult.hasErrors()) {
 			log.info("errors = {}", bindingResult);
